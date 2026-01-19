@@ -34,6 +34,6 @@ services:
     env_file:
       - .env  # 引用 .env 文件
     environment:
-      - ACCESS_TOKEN: ${GITHUB_ACCESS_TOKEN}
+      - ACCESS_TOKEN=${GITHUB_ACCESS_TOKEN}
 volumes:
   runner-work:
