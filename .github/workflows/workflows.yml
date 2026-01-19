@@ -16,7 +16,7 @@ jobs:
           docker buildx build \
             --load \
             -t ci-cd:latest \
-            -f Dockerfile \
+            -f Dockerfile.glowroot \
             .
           echo "========== 建完的 images 清單 =========="
           docker images

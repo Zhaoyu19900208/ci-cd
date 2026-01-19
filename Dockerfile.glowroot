@@ -1,0 +1,18 @@
+FROM eclipse-temurin:11-jre-alpine-3.23
+# 设置工作目录
+WORKDIR /app
+# 复制 jar 文件
+COPY target/*.jar app.jar
+COPY glowroot.zip glowroot.zip
+# 解压 glowroot
+RUN unzip glowroot.zip -d glowroot
+EXPOSE 8999
+ENTRYPOINT ["java", \
+	"-Djava.awt.headless=true", \
+	"-javaagent:glowroot/glowroot.jar", \
+    "-Xms512m", \
+    "-Xmx1024m", \
+    "-Dspring.profiles.active=zydocker", \
+    "-XX:TieredStopAtLevel=1", \
+    "-jar", \
+    "app.jar"]
