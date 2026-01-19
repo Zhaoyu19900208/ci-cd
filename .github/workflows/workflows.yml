@@ -14,8 +14,8 @@ jobs:
       - name: Set up JDK 11（依你的專案改版本）
         uses: actions/setup-java@v4
         with:
-          java-version: '11.0.20'          # 或 '17'、'11' 等
-          distribution: 'temurin'     # Adoptium / Eclipse Temurin，很穩定
+          java-version: '11-jre'          # 或 '17'、'11' 等
+          distribution: 'eclipse-temurin'     # Adoptium / Eclipse Temurin，很穩定
           retries: 3  # 增加重试次数
           retry-delay: 30  # 重试延迟（秒）
       - name: Build with Maven（產生 JAR）
