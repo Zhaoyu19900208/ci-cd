@@ -31,5 +31,6 @@ services:
     # 或用 security_opt: - label:disable (SELinux 系统)
     env_file:
       - .env  # 引用 .env 文件
+      -
 volumes:
   runner-work:
