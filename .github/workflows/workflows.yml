@@ -1,4 +1,4 @@
-name: actions-runner
+name: Test Self-Hosted Runner
 
 on:
   workflow_dispatch:   # 手动触发测试（推荐先用这个）
@@ -7,8 +7,7 @@ on:
 
 jobs:
   test:
-    runs-on: [actions-runner]          # ← 这里指定使用你的本地 runner
-    # 或更精确：runs-on: [self-hosted, docker, linux]  # 如果你加了自定义 labels
+    runs-on: [self-hosted, actions-runner]  # 如果你加了自定义 labels
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

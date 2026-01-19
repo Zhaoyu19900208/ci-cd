@@ -3,8 +3,8 @@ version: '3.8'
 services:
   github-runner:
     #build: .
-    image: myoung34/github-runner:latest #用dockerfile的镜像
-    container_name: actions-runner
+    image: ghcr.io/actions/actions-runner:latest #用dockerfile的镜像
+    container_name: ci-cd-actions-runner
     restart: unless-stopped
     environment:
       # 必填 - 仓库或组织 URL
@@ -15,22 +15,19 @@ services:
       # RUNNER_TOKEN: ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
 
       # 可选参数
-      RUNNER_NAME: my-local-docker-runner              # runner 名称，GitHub 上可见
-      RUNNER_WORKDIR: /_work                           # 工作目录（建议与 volume 匹配）
-      LABELS: self-hosted,linux,x64,docker,local       # 自定义标签，workflow 里用 runs-on: [self-hosted, docker]
-      RUNNER_SCOPE: repo                               # repo / org / enterprise
-      DISABLE_AUTO_UPDATE: "false"                     # 是否禁用 runner 自动更新
+      RUNNER_NAME: my-local-docker-runner                               # runner 名称，GitHub 上可见
+      RUNNER_WORKDIR: /_work                                            # 工作目录（建议与 volume 匹配）
+      LABELS: actions-runner,linux,x64,docker,local,actions-runner      # 自定义标签，workflow 里用 runs-on: [self-hosted, docker]
+      RUNNER_SCOPE: repo                                                # repo / org / enterprise
+      DISABLE_AUTO_UPDATE: "false"                                      # 是否禁用 runner 自动更新
 
     volumes:
-      # 必须：让容器能访问宿主机 Docker（实现 Docker-in-Docker）
-      - /var/run/docker.sock:/var/run/docker.sock
-      # 持久化 runner 配置和工作目录（避免每次重启重新注册）
-      - runner-work:/github/workspace
+      - runner-work:/_work                                              # 持久化工作目录（避免每次重启重新下载依赖）
+      - /var/run/docker.sock:/var/run/docker.sock                       # 必须：让容器能访问宿主机 Docker（实现 Docker-in-Docker）
     # 安全考虑：如果不需要特权，可去掉 privileged（但很多 workflow 需要）
     privileged: true
     # 或用 security_opt: - label:disable (SELinux 系统)
     env_file:
       - .env  # 引用 .env 文件
-      -
 volumes:
   runner-work:
