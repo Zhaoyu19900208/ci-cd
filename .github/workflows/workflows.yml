@@ -11,29 +11,33 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Set up JDK 11（依你的專案改版本）
+      - name: Set up JDK 11（JDK版本）
         uses: actions/setup-java@v4
         with:
-          java-version: '11.0.29+7'          # 或 '17'、'11' 等
-          distribution: 'temurin'     # Adoptium / Eclipse Temurin，很穩定
-      - name: Build with Maven（產生 JAR）
+          java-version: '11.0.29+7'
+          distribution: 'temurin'
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4
+        with:
+          maven-version: '3.9.0'
+      - name: Build with Maven（打JAR）
         if: contains(github.repository, 'ci-cd')  # 可選，判斷專案類型
         run: |
             mvn clean package -DskipTests
-      - name: List generated JAR files
+      - name: List generated JAR files（查看jar）
         run: |
           dir target\*.jar || dir build\libs\*.jar || echo "沒找到 JAR 包，請檢查 build log"
-      - name: Build Docker image & Load 到這台 Windows Docker
+      - name: Build Docker image & Load 到 Windows Docker
         run: |
           docker buildx build \
             --load \
             -t ci-cd:latest \
             -f Dockerfile.glowroot \
             .
-          echo "========== 建完的 images 清單 =========="
+          echo "========== images 清单 =========="
           docker images
-      - name: 測試剛剛建好的 image
+      - name: 建好的 image
         run: |
-          echo "成功！我是從 GitHub Actions 建出來的！"
+          echo "成功！我是 GitHub Actions 创建出来的！"
           docker run --rm -d -p 8999:8080 --name test ci-cd:latest
 
