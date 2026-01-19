@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   github-runner:
     #build: .
-    image: ghcr.io/actions/actions-runner:latest #用dockerfile的镜像
+    image: myoung34/github-runner:latest #用dockerfile的镜像
     container_name: ci-cd-actions-runner
     restart: unless-stopped
     environment:
