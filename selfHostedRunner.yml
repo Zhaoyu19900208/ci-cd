@@ -1,0 +1,25 @@
+name: Test Self-Hosted Runner
+
+on:
+  workflow_dispatch:   # 手动触发测试（推荐先用这个）
+  push:              # 或 push 到 main 分支自动触发
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: [actions-runner]          # ← 这里指定使用你的本地 runner
+    # 或更精确：runs-on: [self-hosted, docker, linux]  # 如果你加了自定义 labels
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Print environment info
+        run: |
+          echo "Running on my local Docker runner!"
+          uname -a
+          docker --version || echo "Docker not available"
+          java -version || echo "No Java"
+          node -version || echo "No Node"
+
+      - name: Test Docker works (if you mounted docker.sock)
+        run: docker run --rm hello-world
