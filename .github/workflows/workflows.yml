@@ -1,4 +1,4 @@
-name: actions-runner
+name: Build & Load Image to Local Windows Docker
 
 on:
   workflow_dispatch:   # 手动触发测试（推荐先用这个）
@@ -11,14 +11,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Print environment info
+      - name: Build Docker image & Load 到這台 Windows Docker
         run: |
-          echo "Running on my local Docker runner!"
-          uname -a
-          docker --version || echo "Docker not available"
-          java -version || echo "No Java"
-          node -version || echo "No Node"
-
-      - name: Test Docker works (if you mounted docker.sock)
-        run: docker run --rm hello-world
+          docker buildx build \
+            --load \
+            -t ci-cd:latest \
+            -f Dockerfile \
+            .
+          echo "========== 建完的 images 清單 =========="
+          docker images
+      - name: 測試剛剛建好的 image
+        run: |
+          echo "成功！我是從 GitHub Actions 建出來的！"
+          docker run --rm -d -p 8999:80 --name test ci-cd:latest
