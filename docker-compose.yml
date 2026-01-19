@@ -2,14 +2,15 @@ version: '3.8'
 
 services:
   github-runner:
-    image: ghcr.io/myoung34/github-runner:latest   # 或 :ubuntu-22.04 等特定 tag
-    container_name: github-actions-runner
+    #build: .
+    image: myoung34/github-runner:latest #用dockerfile的镜像
+    container_name: actions-runner
     restart: unless-stopped
     environment:
       # 必填 - 仓库或组织 URL
       REPO_URL: https://github.com/Zhaoyu19900208/ci-cd         # 或组织：https://github.com/你的组织
       # 方式1：用 PAT（推荐，长期有效）
-      ACCESS_TOKEN: ghpat_你的PAT令牌
+      ACCESS_TOKEN: ${ACCESS_TOKEN}
       # 方式2：用 registration token（短期，从 GitHub 获取）
       # RUNNER_TOKEN: ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
 
@@ -24,13 +25,15 @@ services:
       # 必须：让容器能访问宿主机 Docker（实现 Docker-in-Docker）
       - /var/run/docker.sock:/var/run/docker.sock
       # 持久化 runner 配置和工作目录（避免每次重启重新注册）
-      - runner-data:/_work
-      - runner-config:/runner
+      - runner-work:/github/workspace
 
     # 安全考虑：如果不需要特权，可去掉 privileged（但很多 workflow 需要）
     privileged: true
     # 或用 security_opt: - label:disable (SELinux 系统)
-
+  app:
+    env_file:
+      - .env  # 引用 .env 文件
+    environment:
+      - ACCESS_TOKEN: ${GITHUB_ACCESS_TOKEN}
 volumes:
-  runner-data:
-  runner-config:
+  runner-work:
