@@ -16,3 +16,6 @@ ENTRYPOINT ["java", \
     "-XX:TieredStopAtLevel=1", \
     "-jar", \
     "app.jar"]
+
+
+#github的密码 sha256:8ce3399c01bfe78fb7dc72f3afab3552a4957531b8ec2d2a914247ecf635c281
